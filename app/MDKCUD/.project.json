@@ -1,54 +1,83 @@
 {
-    "Credential": "cf",
-    "Template": {
-        "Id": "@ext-mdkvsc-npm-dev/generator-mdk",
-        "Name": "CRUD",
-        "Version": "0.0.1"
-    },
-    "CF": {
-        "Target": "",
-        "Organization": "",
-        "Space": "",
-        "Deploy": {
-            "Description": "My SAP application",
-            "WebClient": {
-                "Runtime": "preview",
-                "URL": ""
-            },
-            "Destination": [{
-                "CF": "MyProject0711-app-srv",
-                "MDK": "../service/MyProject0711/",
-                "URL": ""
-            }]
-        }
-    },
-    "MobileService": {
-        "Type": "standard",
-        "AdminAPI": "",
-        "AppId": "lcap.MyProject0711.MDKCUD",
-        "Destination": []
-    },
-    "Onboarding": {
-        "Schema": "sapmobilesvcs",
-        "TimeZone": "UTC",
-        "URL": ""
-    },
-    "LCAP": {
-        "FullName": "MyProject0711_MDKCUD",
-        "Service": [{
-            "mdk": "MDKCUD/Services/service1.service",
-            "cap": {
-                "name": "MyProject0711Service",
-                "sourcePath": "srv/service.cds",
-                "path": "/service/MyProject0711/",
-                "entryPath": "/service/MyProject0711",
-                "destination": "MyProject0711-app-srv",
-                "value": "0"
-            }
-        }],
-        "sourceTemplate": {
-            "id": "html5moduletemplates.basicSAPUI5ApplicationProjectModule",
-            "version": "1.40.12"
-        }
-    }
+	"Credential": "cf",
+	"Template": {
+		"Id": "@ext-mdkvsc-npm-dev/generator-mdk",
+		"Name": "CRUD",
+		"Version": "0.0.1"
+	},
+	"CF": {
+		"Target": "",
+		"Organization": "",
+		"Space": "",
+		"Deploy": {
+			"Description": "My SAP application",
+			"WebClient": {
+				"Runtime": "preview",
+				"URL": ""
+			},
+			"Destination": [
+				{
+					"CF": "MyProject0711-app-srv",
+					"MDK": "../service/MyProject0711/",
+					"URL": ""
+				}
+			]
+		}
+	},
+	"MobileService": {
+		"Type": "standard",
+		"AdminAPI": "",
+		"AppId": "lcap.MyProject0711.MDKCUD",
+		"Destination": []
+	},
+	"Onboarding": {
+		"Schema": "sapmobilesvcs",
+		"TimeZone": "UTC",
+		"URL": ""
+	},
+	"LCAP": {
+		"FullName": "MyProject0711_MDKCUD",
+		"Service": [
+			{
+				"mdk": "MDKCUD/Services/service1.service",
+				"cap": {
+					"name": "MyProject0711Service",
+					"sourcePath": "srv/service.cds",
+					"path": "/service/MyProject0711/",
+					"entryPath": "/service/MyProject0711",
+					"destination": "MyProject0711-app-srv",
+					"value": "0"
+				},
+				"links": [
+					{
+						"entity": "MyProject0711Service.Authors",
+						"files": [
+							"MDKCUD/Pages/Authors/Authors_Detail.page",
+							"MDKCUD/Pages/Authors/Authors_Edit.page",
+							"MDKCUD/Pages/Authors/Authors_List.page",
+							"MDKCUD/Actions/Authors/Authors_CreateEntity.action",
+							"MDKCUD/Actions/Authors/Authors_DeleteEntity.action",
+							"MDKCUD/Actions/Authors/Authors_UpdateEntity.action"
+						]
+					},
+					{
+						"entity": "MyProject0711Service.Books",
+						"files": [
+							"MDKCUD/Pages/Books/Books_Detail.page",
+							"MDKCUD/Pages/Books/Books_Edit.page",
+							"MDKCUD/Pages/Books/Books_List.page",
+							"MDKCUD/Actions/Authors/Authors_CreateBooks.action",
+							"MDKCUD/Actions/Books/Books_CreateEntity.action",
+							"MDKCUD/Actions/Books/Books_DeleteEntity.action",
+							"MDKCUD/Actions/Books/Books_UpdateEntity.action"
+						]
+					}
+				]
+			}
+		],
+		"sourceTemplate": {
+			"id": "html5moduletemplates.basicSAPUI5ApplicationProjectModule",
+			"version": "1.40.12"
+		}
+	}
 }
