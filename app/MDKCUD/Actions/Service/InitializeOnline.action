@@ -1,0 +1,10 @@
+{
+    "Service": "/MDKCUD/Services/service1.service",
+    "_Type": "Action.Type.ODataService.Initialize",
+    "ShowActivityIndicator": true,
+    "OnSuccess": "/MDKCUD/Actions/Service/InitializeOnlineSuccessMessage.action",
+    "OnFailure": "/MDKCUD/Actions/Service/InitializeOnlineFailureMessage.action",
+    "ActionResult": {
+        "_Name": "init"
+    }
+}

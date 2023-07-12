@@ -1,0 +1,20 @@
+{
+    "_Type": "Action.Type.ODataService.UpdateEntity",
+    "Target": {
+        "EntitySet": "Authors",
+        "Service": "/MDKCUD/Services/service1.service",
+        "ReadLink": "{@odata.readLink}"
+    },
+    "Properties": {
+        "createdAt": "#Control:createdAt/#Value",
+        "createdBy": "#Control:createdBy/#Value",
+        "modifiedAt": "#Control:modifiedAt/#Value",
+        "modifiedBy": "#Control:modifiedBy/#Value"
+    },
+    "UpdateLinks": [],
+    "ActionResult": {
+        "_Name": "update"
+    },
+    "OnSuccess": "/MDKCUD/Actions/UpdateEntitySuccessMessage.action",
+    "OnFailure": "/MDKCUD/Actions/UpdateEntityFailureMessage.action"
+}

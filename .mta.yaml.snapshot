@@ -1,0 +1,256 @@
+_schema-version: '3.1'
+ID: MyProject0711
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - rm -rf build/dist
+        - mkdir -p build/dist
+        - rm -rf build/ui-deployer
+        - mkdir -p build/ui-deployer
+    - builder: custom
+      commands:
+        - npm install --production
+        - >-
+          bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+          @sap/cds-dk @sap/mdk-tools"
+        - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        - cds build --production
+modules:
+  - name: MyProject0711-MDKCUD
+    type: html5
+    path: app/MDKCUD
+    build-parameters:
+      builder: custom
+      commands:
+        - npx -p @sap/mdk-tools mdk build --target module --ui5 --forceUpdate
+        - bash -c "cd Web/MDKModule && rm -rf .npmrc && npm install"
+        - bash -c "cd Web/MDKModule && npm run build"
+        - >-
+          bash -c "mv Web/MDKModule/MDKModule-content.zip
+          ../../build/dist/MDKCUD.zip"
+        - rm -rf Web/MDKModule/dist
+      _artifactName: MDKCUD.zip
+      supported-platforms: []
+      build-result: ../../build/dist
+  - name: MyProject0711-MyProject0711.FioriApp
+    type: html5
+    path: app/MyProject0711.FioriApp
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateManifestBundle
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - >-
+          bash -c "cd dist && npx bestzip ../dist-zip/MyProject0711FioriApp.zip
+          *"
+      _artifactName: MyProject0711FioriApp.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: MyProject0711-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: MyProject0711-service-uaa
+      - name: MyProject0711-service-db
+  - name: MyProject0711-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      memory: 256MB
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: MyProject0711-service-uaa
+      - name: MyProject0711-service-db
+      - name: MyProject0711-service-destination
+      - name: MyProject0711-service-metadata
+      - name: MyProject0711-service-connectivity
+      - name: MyProject0711-service-logs
+      - name: MyProject0711-service-pdm
+        parameters:
+          config:
+            fullyQualifiedApplicationName: MyProject0711-${space}-${org}
+            fullyQualifiedModuleName: MyProject0711-${space}-${org}
+            applicationTitle: MyProject0711 for LCAP
+            applicationTitleKey: MyProject0711 for LCAP
+            applicationURL: ${default-url}
+            endPoints:
+              - type: odatav4
+                serviceName: MyProject0711-pdm
+                serviceTitle: OData service for Personal Data Manager
+                serviceTitleKey: OData service for Personal Data Manager
+                serviceURI: /service/pdm
+                hasGdprV4Annotations: true
+                cacheControl: no-cache
+  - name: MyProject0711-aux-destinations
+    type: com.sap.application.content
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: MyProject0711-service-uaa
+              ServiceInstanceName: MyProject0711-uaa
+              ServiceKeyName: MyProject0711-uaa-key
+              sap.cloud.service: lcap.MyProject0711
+            - Authentication: OAuth2UserTokenExchange
+              Name: MyProject0711-app-srv
+              TokenServiceInstanceName: MyProject0711-uaa
+              TokenServiceKeyName: MyProject0711-uaa-key
+              URL: ~{srv-api/srv-url}
+              sap.cloud.service: lcap.MyProject0711
+            - Name: MyProject0711-service-html5-apps-repo-host
+              ServiceInstanceName: MyProject0711-html5-apps-repo-host
+              ServiceKeyName: MyProject0711-html5-apps-repo-host-key
+              sap.cloud.service: lcap.MyProject0711
+    build-parameters:
+      no-source: true
+    requires:
+      - name: MyProject0711-service-uaa
+        parameters:
+          service-key:
+            name: MyProject0711-uaa-key
+      - name: srv-api
+      - name: MyProject0711-service-html5-apps-repo-host
+        parameters:
+          service-key:
+            name: MyProject0711-html5-apps-repo-host-key
+      - name: MyProject0711-service-destination
+        parameters:
+          content-target: true
+  - name: MyProject0711-launchpad
+    type: html5
+    path: build/launchpad
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateManifestBundle
+          --include-task=generateCachebusterInfo
+        - bash -c "cd dist && npx bestzip ../../../build/dist/launchpad.zip *"
+        - rm -rf dist
+      _artifactName: launchpad.zip
+      supported-platforms: []
+      build-result: ../../build/dist
+  - name: MyProject0711-aux-ui-deployer
+    type: com.sap.application.content
+    path: build/ui-deployer
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: MyProject0711-MDKCUD
+          artifacts:
+            - MDKCUD.zip
+          target-path: resources
+        - name: MyProject0711-MyProject0711.FioriApp
+          artifacts:
+            - MyProject0711FioriApp.zip
+          target-path: resources
+        - name: MyProject0711-launchpad
+          artifacts:
+            - launchpad.zip
+          target-path: resources
+    requires:
+      - name: MyProject0711-service-html5-apps-repo-host
+        parameters:
+          content-target: true
+resources:
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-uaa
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: MyProject0711-uaa
+      path: xs-security.json
+      config:
+        xsappname: MyProject0711-${space}
+        role-collections:
+          - description: PersonalDataManager
+            name: MyProject0711-PersonalDataManager-${space}
+            role-template-references:
+              - $XSAPPNAME.PersonalDataManager
+          - description: ''
+            name: MyProject0711-BooksRole-${space}
+            role-template-references:
+              - $XSAPPNAME.BooksRole
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-db
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      service-name: MyProject0711-db
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-destination
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: MyProject0711-destination
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - type: org.cloudfoundry.user-provided-service
+    name: MyProject0711-service-metadata
+    parameters:
+      service: metadata
+      service-plan: standard
+      service-name: MyProject0711-metadata
+      config:
+        default-domain: ${default-domain}
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-connectivity
+    parameters:
+      service: connectivity
+      service-plan: lite
+      service-name: MyProject0711-connectivity
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-logs
+    parameters:
+      service: application-logs
+      service-plan: lite
+      service-name: MyProject0711-logs
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-pdm
+    parameters:
+      service: personal-data-manager-service
+      service-plan: standard
+      service-name: MyProject0711-pdm
+      config:
+        xs-security:
+          xsappname: MyProject0711-${space}
+          authorities:
+            - $ACCEPT_GRANTED_AUTHORITIES
+        fullyQualifiedApplicationName: MyProject0711-${space}-${org}
+        appConsentServiceEnabled: true
+  - type: org.cloudfoundry.managed-service
+    name: MyProject0711-service-html5-apps-repo-host
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: MyProject0711-html5-apps-repo-host

@@ -1,0 +1,39 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.PersonalDataManager",
+      "description": "PersonalDataManager",
+      "grant-as-authority-to-apps": [
+        "$XSSERVICENAME(MyProject0711-pdm)"
+      ]
+    },
+    {
+      "name": "$XSAPPNAME.BooksRole",
+      "description": "BooksRole"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "PersonalDataManager",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.PersonalDataManager"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "BooksRole",
+      "description": "",
+      "scope-references": [
+        "$XSAPPNAME.BooksRole"
+      ],
+      "attribute-references": []
+    }
+  ],
+  "xsappname": "MyProject0711",
+  "tenant-mode": "dedicated",
+  "authorities": [
+    "$XSAPPNAME.PersonalDataManager"
+  ]
+}

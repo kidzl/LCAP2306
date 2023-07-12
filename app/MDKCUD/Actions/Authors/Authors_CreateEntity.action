@@ -1,0 +1,19 @@
+{
+    "CreateLinks": [],
+    "OnFailure": "/MDKCUD/Actions/CreateEntityFailureMessage.action",
+    "OnSuccess": "/MDKCUD/Actions/CreateEntitySuccessMessage.action",
+    "Properties": {
+        "createdAt": "#Control:createdAt/#Value",
+        "createdBy": "#Control:createdBy/#Value",
+        "modifiedAt": "#Control:modifiedAt/#Value",
+        "modifiedBy": "#Control:modifiedBy/#Value"
+    },
+    "Target": {
+        "EntitySet": "Authors",
+        "Service": "/MDKCUD/Services/service1.service"
+    },
+    "ActionResult": {
+        "_Name": "create"
+    },
+    "_Type": "Action.Type.ODataService.CreateEntity"
+}

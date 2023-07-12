@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ObjectPage"],function(t){"use strict";var e={actions:{},assertions:{}};return new t({appId:"MyProject0711.FioriApp",componentId:"BooksDraftObjectPage",entitySet:"BooksDraft"},e)});
+//# sourceMappingURL=BooksDraftObjectPage.js.map

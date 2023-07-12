@@ -1,0 +1,5 @@
+{
+  "ProjectOverviewURL": "https://lcap-qa.launchpad.cfapps.sap.hana.ondemand.com/lcapMyProject0711.MyProject0711Launchpad-1.0.0",
+  "DeployedUTCTime": "2023-07-12T03:17:22.737Z",
+  "ApplicationLogURL": "https://logs.cf.sap.hana.ondemand.com/app/dashboards#/view/Overview?_g=(filters:!((query:(match_phrase:(component_name:MyProject0711-srv)))))"
+}

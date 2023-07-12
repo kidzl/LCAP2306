@@ -1,0 +1,2 @@
+sap.ui.require(["sap/fe/test/JourneyRunner","MyProject0711/FioriApp/test/integration/FirstJourney","MyProject0711/FioriApp/test/integration/pages/BooksDraftObjectPage"],function(e,r,t){"use strict";var e=new e({launchUrl:sap.ui.require.toUrl("MyProject0711/FioriApp")+"/index.html"});e.run({pages:{onTheBooksDraftObjectPage:t}},r.run)});
+//# sourceMappingURL=opaTests.qunit.js.map

@@ -1,0 +1,20 @@
+{
+    "CreateLinks": [],
+    "OnFailure": "/MDKCUD/Actions/CreateEntityFailureMessage.action",
+    "OnSuccess": "/MDKCUD/Actions/CreateEntitySuccessMessage.action",
+    "Properties": {
+        "ID": "#Control:ID/#Value",
+        "title": "#Control:title/#Value",
+        "stock": "#Control:stock/#Value",
+        "price": "#Control:price/#Value",
+        "currency": "#Control:currency/#Value"
+    },
+    "Target": {
+        "EntitySet": "Books",
+        "Service": "/MDKCUD/Services/service1.service"
+    },
+    "ActionResult": {
+        "_Name": "create"
+    },
+    "_Type": "Action.Type.ODataService.CreateEntity"
+}
